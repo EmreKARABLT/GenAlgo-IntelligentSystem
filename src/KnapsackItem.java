@@ -1,4 +1,4 @@
-public class KnapsackItem {
+public class KnapsackItem implements Comparable<KnapsackItem>{
     public int weight ;
     public int value ;
 
@@ -12,5 +12,19 @@ public class KnapsackItem {
     public int getValue() {
         return value;
     }
+    public double density(){
+        return ((double)value)/weight;
+    }
+    @Override
+    public int compareTo(KnapsackItem o) {
+        return Double.compare(this.density(),o.density());
+    }
 
+    @Override
+    public String toString() {
+        return "KnapsackItem{" +
+                "weight=" + weight +
+                ", value=" + value +
+                '}';
+    }
 }
