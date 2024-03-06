@@ -24,20 +24,38 @@ public class GA {
             IndividualKnapsack individual = new IndividualKnapsack(genome);
             population.add(individual);
         }
-        System.out.println(population);
+
 
     }
     public void geneticAlgorithm(){
         initializePopulation();
-        for (int i = 0; i < 5; i++) {
+        int gen = 0 ;
+        while(!checkStoppingConditionReached(population, 0.75)){
             ArrayList<IndividualKnapsack> matingPool = selection();
-            System.out.println("pop size " + population.size());
             population = generateNewGeneration(matingPool);
-
+            double total_fitness = 0;
+            for (IndividualKnapsack individualKnapsack : population) {
+                total_fitness += individualKnapsack.getFitness();
+            }
+            System.out.println("Gen :" + (gen+1) + " - "+  total_fitness/populationSize + " - " + population.stream().max(IndividualKnapsack::compareTo).stream().toList().get(0).getFitness() );
+            gen++;
         }
 
 
 
+
+    }
+    public boolean checkStoppingConditionReached(ArrayList<IndividualKnapsack> population , double percantage ){
+        int max = population.stream().min(IndividualKnapsack::compareTo).stream().toList().get(0).getFitness();
+        double count = 0;
+        for (IndividualKnapsack individual : population) {
+            if(individual.getFitness() == max)
+                count++;
+        }
+        if( count / populationSize > percantage){
+            return true;
+        }
+        return false;
     }
 
     public IndividualKnapsack crossover(IndividualKnapsack mother , IndividualKnapsack father){
@@ -57,7 +75,6 @@ public class GA {
 
     public ArrayList<IndividualKnapsack> generateNewGeneration(ArrayList<IndividualKnapsack> matingPool){
         ArrayList<IndividualKnapsack> newGeneration = new ArrayList<>();
-        System.out.println(2 * this.populationSize / matingPool.size());
         for (int i = 0; i < matingPool.size(); i+=2) {
             IndividualKnapsack mother = matingPool.get(i);
             IndividualKnapsack father = matingPool.get(i+1);
@@ -71,29 +88,21 @@ public class GA {
     }
     public ArrayList<IndividualKnapsack> selection(){
         Collections.sort(population);
-        ArrayList<IndividualKnapsack> matingPool = new ArrayList<>(population.subList(0 , (int)( population.size()*0.5) ));
+        Collections.reverse(population);
+        ArrayList<IndividualKnapsack> matingPool = new ArrayList<>(population.subList(0 , (int)( population.size()*0.10) ));
         Collections.shuffle(matingPool);
         return matingPool;
     }
 
     public static void main(String[] args) {
-        KnapsackItem item1 = new KnapsackItem(1,1);
-        KnapsackItem item2 = new KnapsackItem(2,4);
-        KnapsackItem item3 = new KnapsackItem(3,9);
-        KnapsackItem item4 = new KnapsackItem(4,16);
-        KnapsackItem item5 = new KnapsackItem(5,25);
-        System.out.println(item1.density());
+        Random random_ = new Random();
         ArrayList<KnapsackItem> items = new ArrayList<>();
-        items.add(item1);
-        items.add(item2);
-        items.add(item3);
-        items.add(item4);
-        items.add(item5);
-        System.out.println(items.stream().sorted(KnapsackItem::compareTo).toList());
-        System.out.println(items);
+        for (int i = 0; i < 50; i++) {
+            items.add(new KnapsackItem(random_.nextInt(10) , random_.nextInt(10)));
+        }
         Knapsack.items = items;
-        Knapsack.limit = 8;
-        GA ga = new GA(80,5,0.1);
+        Knapsack.limit = 100;
+        GA ga = new GA(1000,50,0.05);
 
 
 

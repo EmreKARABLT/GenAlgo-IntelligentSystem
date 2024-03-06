@@ -20,13 +20,6 @@ public class Knapsack {
 
             }
         }
-//        while(this.getWeight()> limit){
-//            Collections.sort(sack);
-//            System.out.println("sack  " +sack);
-//            int index = items.indexOf(sack.get(0));
-//            individual.changeGene(index , 0);
-//            sack.remove(0);
-//        }
          while(this.getWeight()> limit){
             KnapsackItem knapsackItem = sack.get(random.nextInt(sack.size()));
             int index = items.indexOf(knapsackItem);

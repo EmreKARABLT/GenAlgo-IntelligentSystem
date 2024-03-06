@@ -33,7 +33,7 @@ public class IndividualKnapsack implements Comparable<IndividualKnapsack>{
 
     @Override
     public int compareTo(IndividualKnapsack o) {
-        return Integer.compare(o.fitness,this.fitness);
+        return Integer.compare(this.fitness,o.fitness);
     }
 
     @Override
