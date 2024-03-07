@@ -30,14 +30,11 @@ public class GA {
     public void geneticAlgorithm(){
         initializePopulation();
         int gen = 0 ;
-        while(!checkStoppingConditionReached(population, 0.75)){
+        while(!checkStoppingConditionReached(population, 0.90)){
             ArrayList<IndividualKnapsack> matingPool = selection();
             population = generateNewGeneration(matingPool);
-            double total_fitness = 0;
-            for (IndividualKnapsack individualKnapsack : population) {
-                total_fitness += individualKnapsack.getFitness();
-            }
-            System.out.println("Gen :" + (gen+1) + " - "+  total_fitness/populationSize + " - " + population.stream().max(IndividualKnapsack::compareTo).stream().toList().get(0).getFitness() );
+
+            System.out.println("Gen :" + (gen+1) + " - Average :"+  this.averageFitness(population) + " - Max :" + population.stream().max(IndividualKnapsack::compareTo).stream().toList().get(0).getFitness() );
             gen++;
         }
 
@@ -45,14 +42,19 @@ public class GA {
 
 
     }
+    public double averageFitness(ArrayList<IndividualKnapsack> population){
+        double sum = population
+                .stream().map(IndividualKnapsack::getFitness).reduce(0,Integer::sum);
+        return sum / (double)(populationSize);
+    }
     public boolean checkStoppingConditionReached(ArrayList<IndividualKnapsack> population , double percantage ){
-        int max = population.stream().min(IndividualKnapsack::compareTo).stream().toList().get(0).getFitness();
+        double averageFitness = this.averageFitness(population);
         double count = 0;
         for (IndividualKnapsack individual : population) {
-            if(individual.getFitness() == max)
+            if(individual.getFitness() > averageFitness)
                 count++;
         }
-        if( count / populationSize > percantage){
+        if( count / populationSize >= percantage){
             return true;
         }
         return false;
@@ -96,25 +98,20 @@ public class GA {
 
     public static void main(String[] args) {
         Random random_ = new Random();
+//        KnapsackItem a = new KnapsackItem(6,4);
+//        KnapsackItem b = new KnapsackItem(7,3);
+//        KnapsackItem c = new KnapsackItem(8,5);
         ArrayList<KnapsackItem> items = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 10; i++) {
             items.add(new KnapsackItem(random_.nextInt(10) , random_.nextInt(10)));
         }
+//        items.add(a);
+//        items.add(b);
+//        items.add(c);
         Knapsack.items = items;
-        Knapsack.limit = 100;
-        GA ga = new GA(1000,50,0.05);
+        Knapsack.limit = 13;
+        GA ga = new GA(100000,Knapsack.items.size(),0.001);
 
-
-
-
-//        IndividualKnapsack individual1 = new IndividualKnapsack(new int[]{1,0,1,0,1});
-//        IndividualKnapsack individual2 = new IndividualKnapsack(new int[]{1,1,1,1,1});
-//        System.out.println(individual1.getFitness()+ " " + Arrays.toString(individual1.getGenome()));
-//        System.out.println(individual2.getFitness() + " " + Arrays.toString(individual2.getGenome()));
-//        ArrayList<IndividualKnapsack> individuals = new ArrayList<>();
-//        individuals.add(individual1);
-//        individuals.add(individual2);
-//        System.out.println(individuals.stream().sorted().toList());
     }
 
 }
