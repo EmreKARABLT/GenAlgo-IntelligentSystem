@@ -30,7 +30,9 @@ public class IndividualKnapsack implements Comparable<IndividualKnapsack>{
     public void changeGene(int index , int gene){
         this.genome[index] = gene;
     }
-
+    public Knapsack getKnapsack(){
+        return this.knapsack ;
+    }
     @Override
     public int compareTo(IndividualKnapsack o) {
         return Integer.compare(this.fitness,o.fitness);
