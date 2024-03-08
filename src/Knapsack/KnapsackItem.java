@@ -1,3 +1,5 @@
+package Knapsack;
+
 public class KnapsackItem implements Comparable<KnapsackItem>{
     public int weight ;
     public int value ;
@@ -22,7 +24,7 @@ public class KnapsackItem implements Comparable<KnapsackItem>{
 
     @Override
     public String toString() {
-        return "KnapsackItem{" +
+        return "Knapsack.KnapsackItem{" +
                 "weight=" + weight +
                 ", value=" + value +
                 '}';

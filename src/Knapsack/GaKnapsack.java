@@ -1,13 +1,15 @@
+package Knapsack;
+
 import java.util.*;
 
-public class GA {
+public class GaKnapsack {
     Random random = new Random();
 
     public int populationSize ;
     public int geneLength ;
     public double mutationRate ;
     ArrayList<IndividualKnapsack> population ;
-    public GA(int populationSize , int geneLength, double mutationRate){
+    public GaKnapsack(int populationSize , int geneLength, double mutationRate){
 
         this.populationSize = populationSize;
         this.mutationRate = mutationRate;
@@ -98,19 +100,21 @@ public class GA {
 
     public static void main(String[] args) {
         Random random_ = new Random();
-//        KnapsackItem a = new KnapsackItem(6,4);
-//        KnapsackItem b = new KnapsackItem(7,3);
-//        KnapsackItem c = new KnapsackItem(8,5);
+//        Knapsack.KnapsackItem a = new Knapsack.KnapsackItem(6,4);
+//        Knapsack.KnapsackItem b = new Knapsack.KnapsackItem(7,3);
+//        Knapsack.KnapsackItem c = new Knapsack.KnapsackItem(8,5);
         ArrayList<KnapsackItem> items = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            items.add(new KnapsackItem(random_.nextInt(10) , random_.nextInt(10)));
+            for (int j = 0; j < 10; j++) {
+                items.add(new KnapsackItem(i,j));
+            }
         }
 //        items.add(a);
 //        items.add(b);
 //        items.add(c);
         Knapsack.items = items;
-        Knapsack.limit = 13;
-        GA ga = new GA(100000,Knapsack.items.size(),0.001);
+        Knapsack.limit = 100;
+        GaKnapsack ga = new GaKnapsack(100000,Knapsack.items.size(),0.001);
 
     }
 
