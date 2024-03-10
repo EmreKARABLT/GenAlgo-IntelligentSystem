@@ -18,6 +18,8 @@ public class TSP {
         for (int i = 0; i < genome.length ; i++) {
             path.add(cities.get(genome[i]));
         }
+        path.add(cities.get(genome[0]));
+
 
         individual.setFitness(this.getValue());
 

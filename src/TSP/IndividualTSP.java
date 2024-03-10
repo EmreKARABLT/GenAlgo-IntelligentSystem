@@ -9,6 +9,7 @@ public class IndividualTSP implements Comparable<IndividualTSP>{
     public IndividualTSP(int[] genome){
         this.genome = genome;
         this.knapsack = new TSP();
+
         this.knapsack.simulate(this);
     }
     public double getFitness() {
