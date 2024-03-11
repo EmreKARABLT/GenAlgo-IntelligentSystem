@@ -54,11 +54,11 @@ public class GaTSP {
     public void geneticAlgorithm(){
         initializePopulation();
         int gen = 0 ;
-        while(!checkStoppingConditionReached(population, 0.05)){
+        while(!checkStoppingConditionReached(population, 0.005)){
             ArrayList<IndividualTSP> matingPool = selection();
             population = generateNewGeneration(matingPool);
 //
-            System.out.println("Gen :" + (gen+1) + " - Average :"+  +2*Math.PI + " - Min :" + population.stream().min(IndividualTSP::compareTo).stream().toList().get(0).getFitness() );
+            System.out.println("Gen :" + (gen+1) + " - 2 PI  :"+  +2*Math.PI + " - Min :" + population.stream().min(IndividualTSP::compareTo).stream().toList().get(0).getFitness() );
             gen++;
         }
         System.out.println(population.stream().min(IndividualTSP::compareTo).stream().toList().get(0).knapsack.path);
@@ -71,7 +71,7 @@ public class GaTSP {
     }
 
     public boolean checkStoppingConditionReached(ArrayList<IndividualTSP> population , double threshold_percentage_error ){
-        double min = population.stream().min(IndividualTSP::compareTo).stream().toList().get(0).getFitness();
+        double min = population.stream().min(IndividualTSP::compareTo).stream().toList().getFirst().getFitness();
         double percantage_error = Math.abs( (min - 2*Math.PI)) / Math.PI ;
 
         return percantage_error < threshold_percentage_error;
@@ -117,41 +117,6 @@ public class GaTSP {
         children.add(new IndividualTSP(motherGen));
 
         return children;
-
-//    public ArrayList<IndividualTSP> crossover(IndividualTSP mother , IndividualTSP father){
-//        //https://user.ceng.metu.edu.tr/~ucoluk/research/publications/tspnew.pdf
-//        int[] motherGen = mother.getGene().clone();
-//        int[] fatherGen = father.getGene().clone();
-//        int random_start = random.nextInt(geneLength -1 ) ;
-//        int random_lenght = 1 + random.nextInt( geneLength- random_start );
-//
-//        for (int i = random_start; i < random_lenght  ; i++) {
-//            int swap_index_father = findIndex(mother.getGene()[i], father.getGene());
-//            int temp = fatherGen[swap_index_father];
-//            fatherGen[swap_index_father] = fatherGen[i];
-//            fatherGen[i] = temp;
-//
-//        }
-//
-//        for (int i = random_start; i < random_lenght; i++) {
-//            int swap_index_mother = findIndex( father.getGene()[i] , mother.getGene());
-//            int temp_ = motherGen[swap_index_mother];
-//            motherGen[swap_index_mother] = motherGen[i];
-//            motherGen[i] = temp_;
-//        }
-//        if(random.nextDouble() < mutationRate){
-//            fatherGen = mutate(fatherGen);
-//        }
-//        if(random.nextDouble() < mutationRate){
-//            motherGen = mutate(motherGen);
-//        }
-//
-////        System.out.println("DONE : " + Arrays.toString(motherGen) + "\nDONE : " + Arrays.toString(fatherGen) );
-//        ArrayList<IndividualTSP> children = new ArrayList<>();
-//        children.add(new IndividualTSP(fatherGen));
-//        children.add(new IndividualTSP(motherGen));
-//
-//        return children;
     }
     public int findIndex(int gene, int[] genome){
         for (int i = 0; i < genome.length; i++) {
@@ -198,7 +163,7 @@ public class GaTSP {
     public static void main(String[] args) {
         Random random_ = new Random();
         ArrayList<City> items = new ArrayList<>();
-        int piece = 100 ;
+        int piece = 1000 ;
         int[] arr = new int[piece];
 
         for( int i = 0 ; i < piece ; i++ ){
@@ -211,52 +176,7 @@ public class GaTSP {
         TSP.cities = items;
 
 
-        GaTSP ga = new GaTSP(100000, items.size(),0.001);
+        GaTSP ga = new GaTSP(10000, items.size(),0.001);
 
     }
 }
-
-//PROCESS AVOID
-//
-//INPUT
-//
-///* Define the input for this process, following the structure
-//variable_name: REAL;
-//for numerical input (such as sensor input).
-//
-//You can add multiple sensors. For example:
-//sensor_1: REAL;
-//sensor_2: REAL;
-//sensor_3: REAL;
-//*/
-//
-//sensor_front: REAL;
-//
-//
-//OUTPUT
-//
-///* Define the output for this process. The structure is the same as for input. */
-//
-//speed: REAL;
-//angle: REAL;
-//
-//
-//REGISTER
-//
-///* Here you can store information for a longer period of time. For example:
-//stored_variable_1: REAL;
-//The structure is again the same as for input and output. */
-//
-//
-//        BEHAVIOR
-//
-///* Here you define the behavior of the agent.
-//See also section "3.3: Creating custom processes" in the manual. */
-//
-//IF sensor_front > 0.5 THEN
-//speed := 0;
-//angle := 0.05;
-//FI
-//
-//
-//        END
