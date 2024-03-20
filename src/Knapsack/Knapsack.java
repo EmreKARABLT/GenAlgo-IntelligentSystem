@@ -1,6 +1,7 @@
 package Knapsack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Knapsack {
@@ -46,6 +47,50 @@ public class Knapsack {
             value += knapsackItem.getValue();
         }
         return value;
+    }
+
+    public int simulate_brute_force(int[] genome){
+        sack = new ArrayList<>();
+        for (int i = 0; i < genome.length ; i++) {
+            if(genome[i] == 1) {
+                sack.add(items.get(i));
+            }
+        }
+        if(this.getWeight()> limit){
+          return 0;
+        }
+        return this.getValue();
+
+
+
+    }
+    public int[] decimalToBinary(int decimal, int n) {
+        int[] binary = new int[n];
+        int index = n - 1;
+
+        while (decimal > 0) {
+            binary[index--] = decimal % 2;
+            decimal /= 2;
+        }
+
+        return binary;
+    }
+    public int bruteForce(int n){
+        int[] binaryArray = new int[n]; // Initialize an array to store binary representation
+        int best_value = Integer.MIN_VALUE;
+        for (int i = 0; i < Math.pow(2, n); i++) {
+            int[] binary = decimalToBinary(i, n); // Convert decimal to binary
+            System.arraycopy(binary, 0, binaryArray, 0, n); // Copy binary representation to binaryArray
+            int value = simulate_brute_force(binary); // Print binary representation
+            if(value > best_value) best_value = value;
+
+        }
+        return best_value;
+    }
+
+    public static void main(String[] args) {
+
+
     }
 
 }
