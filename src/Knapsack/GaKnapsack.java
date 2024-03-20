@@ -70,9 +70,11 @@ public class GaKnapsack {
             }else {
                 genome[i] = father.getGene(i);
             }
-            if(random.nextDouble() < this.mutationRate){
-                genome[i] = (int)(Math.round(Math.random()));
-            }
+        }
+
+        if(random.nextDouble() < this.mutationRate){
+            int random_index = random.nextInt(geneLength);
+            genome[random_index] = (int)(Math.round(Math.random()));
         }
         return new IndividualKnapsack(genome);
     }

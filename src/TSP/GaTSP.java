@@ -54,13 +54,17 @@ public class GaTSP {
     public void geneticAlgorithm(){
         initializePopulation();
         int gen = 0 ;
-        while(!checkStoppingConditionReached(population, 0.005)){
+        int col1 = 20 , col2 = 25 , col3 = 20;
+
+        System.out.printf("%-" + col1 + "s%-" + col2 + "s%-" + col3 + "s\n", "Gen","Average Fitness", "Min");
+        while(!checkStoppingConditionReached(population, 0.025)){
             ArrayList<IndividualTSP> matingPool = selection();
             population = generateNewGeneration(matingPool);
-//
-            System.out.println("Gen :" + (gen+1) + " - 2 PI  :"+  +2*Math.PI + " - Min :" + population.stream().min(IndividualTSP::compareTo).stream().toList().get(0).getFitness() );
+            if( (gen ) % 10 == 0)
+                System.out.printf("%-" + col1 + "s%-" + col2 + "s%-" + col3 + "s\n", (gen ), averageFitness(population), population.stream().min(IndividualTSP::compareTo).stream().toList().get(0).getFitness());
             gen++;
         }
+        System.out.printf("%-" + col1 + "s%-" + col2 + "s%-" + col3 + "s\n", (gen+1),averageFitness(population), population.stream().min(IndividualTSP::compareTo).stream().toList().get(0).getFitness());
         System.out.println(population.stream().min(IndividualTSP::compareTo).stream().toList().get(0).knapsack.path);
     }
     public double averageFitness(ArrayList<IndividualTSP> population){
@@ -163,7 +167,7 @@ public class GaTSP {
     public static void main(String[] args) {
         Random random_ = new Random();
         ArrayList<City> items = new ArrayList<>();
-        int piece = 1000 ;
+        int piece = 100 ;
         int[] arr = new int[piece];
 
         for( int i = 0 ; i < piece ; i++ ){
