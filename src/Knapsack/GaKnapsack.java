@@ -1,14 +1,24 @@
 package Knapsack;
 
+import TSP.IndividualTSP;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 
 public class GaKnapsack {
     Random random = new Random();
 
-    public int populationSize ;
-    public int geneLength ;
-    public int maxGen ;
-    public double mutationRate ;
+    private int populationSize ;
+    private int geneLength ;
+    private int maxGen ;
+    private double mutationRate ;
     ArrayList<IndividualKnapsack> population ;
     public GaKnapsack(ArrayList<IndividualKnapsack> population , int populationSize , int geneLength, double mutationRate, int maxGen){
         this.maxGen = maxGen;
@@ -34,14 +44,36 @@ public class GaKnapsack {
     }
     public void geneticAlgorithm(){
 
-        int gen = 0 ;
-        while(!checkStoppingConditionReached(population, 0.90, gen)){
-            ArrayList<IndividualKnapsack> matingPool = selection();
-            population = generateNewGeneration(matingPool);
+        int col1 = 20, col2 = 20, col3 = 20;
+        int gen = 0;
 
-            System.out.println("Gen :" + (gen+1) + " - Average :"+  this.averageFitness(population) + " - Max :" + population.stream().max(IndividualKnapsack::compareTo).stream().toList().get(0).getFitness() );
-            gen++;
+        // Define the CSV file path
+        String csvFilePath = String.format("ks_%f.csv", mutationRate) ;
+
+        try (PrintWriter pw = new PrintWriter(new FileWriter(csvFilePath))) {
+            // Write CSV header
+            pw.println("Gen,Average Fitness,Min");
+
+            while (!checkStoppingConditionReached(population, 0.90, gen)) {
+                ArrayList<IndividualKnapsack> matingPool = selection();
+                population = generateNewGeneration(matingPool);
+
+
+                // Write data to CSV
+                String dataLine = String.format("%d,%f,%d", gen, averageFitness(population), population.stream().max(IndividualKnapsack::compareTo).stream().toList().get(0).getFitness());
+                pw.println(dataLine);
+                System.out.println(dataLine);
+                gen++;
+                if(gen == 1000) break;
+            }
+            // Write final data to CSV
+            String finalDataLine = String.format("%d,%f,%d", --gen, averageFitness(population), population.stream().max(IndividualKnapsack::compareTo).stream().toList().get(0).getFitness());
+            pw.println(finalDataLine);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        System.out.println(mutationRate + " completed");
 
 
 
@@ -109,12 +141,12 @@ public class GaKnapsack {
 //        Knapsack.KnapsackItem b = new Knapsack.KnapsackItem(7,3);
 //        Knapsack.KnapsackItem c = new Knapsack.KnapsackItem(8,5);
         ArrayList<KnapsackItem> items = new ArrayList<>();
-        int numberOfItems = 2500 ;
+        int numberOfItems = 2000 ;
         for (int i = 0; i < numberOfItems; i++) {
-                items.add(new KnapsackItem(random_.nextInt(10), random_.nextInt(10)));
+                items.add(new KnapsackItem(random_.nextInt(8) + 2, random_.nextInt(8) + 2));
         }
         Knapsack.items = items;
-        Knapsack.limit = 350;
+        Knapsack.limit = 1000;
 
 //        Knapsack knapsack = new Knapsack();
 //        System.out.println(knapsack.bruteForce(items.size()));
@@ -122,9 +154,17 @@ public class GaKnapsack {
 //        items.add(b);
 //        items.add(c);
         ArrayList<IndividualKnapsack> population = GaKnapsack.initializePopulation(10000, numberOfItems );
-        double[] mutation_rates = {0.00001 ,0.000025 , 0.00005 , 0.0001 , 0.0002,0.0005 };
+        double[] mutation_rates = {0.01000, 0.10000 , 0.25, 0.5};
+
+
+
+        // Create a fixed thread pool with a size equal to the number of cores
+
+        // Submit each task to the executor
+
         for (double mutation_rate : mutation_rates) {
-            GaKnapsack ga = new GaKnapsack(population, population.size(), Knapsack.items.size(),  mutation_rate,500);
+            System.out.println("--------------- MUTATION RATE : " + mutation_rate + "---------------");
+            GaKnapsack ga2 = new GaKnapsack(population, population.size(), Knapsack.items.size(), mutation_rate, 0);
         }
     }
 

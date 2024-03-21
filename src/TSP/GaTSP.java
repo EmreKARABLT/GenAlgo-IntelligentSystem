@@ -1,8 +1,13 @@
 package TSP;
 
+import Knapsack.GaKnapsack;
 import Knapsack.IndividualKnapsack;
+import Knapsack.Knapsack;
 
 import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,16 +61,34 @@ public class GaTSP {
         int gen = 0 ;
         int col1 = 20 , col2 = 25 , col3 = 20;
 
-        System.out.printf("%-" + col1 + "s%-" + col2 + "s%-" + col3 + "s\n", "Gen","Average Fitness", "Min");
-        while(!checkStoppingConditionReached(population, 0.025)){
-            ArrayList<IndividualTSP> matingPool = selection();
-            population = generateNewGeneration(matingPool);
-            if( (gen ) % 10 == 0)
-                System.out.printf("%-" + col1 + "s%-" + col2 + "s%-" + col3 + "s\n", (gen ), averageFitness(population), population.stream().min(IndividualTSP::compareTo).stream().toList().get(0).getFitness());
-            gen++;
+        String csvFilePath = String.format("tsp_%f.csv", mutationRate) ;
+
+        try (PrintWriter pw = new PrintWriter(new FileWriter(csvFilePath))) {
+            // Write CSV header
+            pw.println("Gen,Average Fitness,Min");
+
+            while (!checkStoppingConditionReached(population, 0.001)) {
+                ArrayList<IndividualTSP> matingPool = selection();
+                population = generateNewGeneration(matingPool);
+
+
+                // Write data to CSV
+                String dataLine = String.format("%d,%f,%f", gen, averageFitness(population), population.stream().min(IndividualTSP::compareTo).stream().toList().get(0).getFitness());
+                pw.println(dataLine);
+                System.out.println(dataLine);
+
+                gen++;
+                if(gen == 1000)
+                    break;
+            }
+            // Write final data to CSV
+            String finalDataLine = String.format("%d,%f,%f", --gen, averageFitness(population), population.stream().min(IndividualTSP::compareTo).stream().toList().get(0).getFitness());
+            pw.println(finalDataLine);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        System.out.printf("%-" + col1 + "s%-" + col2 + "s%-" + col3 + "s\n", (gen+1),averageFitness(population), population.stream().min(IndividualTSP::compareTo).stream().toList().get(0).getFitness());
-        System.out.println(population.stream().min(IndividualTSP::compareTo).stream().toList().get(0).knapsack.path);
+        System.out.println(mutationRate + " completed");
     }
     public double averageFitness(ArrayList<IndividualTSP> population){
         double sum = population
@@ -179,8 +202,11 @@ public class GaTSP {
 
         TSP.cities = items;
 
+        double[] mutation_rates = {0.01000, 0.10000 , 0.25, 0.5};
 
-        GaTSP ga = new GaTSP(10000, items.size(),0.001);
-
+        for (double mutation_rate : mutation_rates) {
+            System.out.println("--------------- MUTATION RATE : " + mutation_rate + "---------------");
+            GaTSP ga2 = new GaTSP(10000, piece, mutation_rate);
+        }
     }
 }
